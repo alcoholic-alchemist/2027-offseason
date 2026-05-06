@@ -46,10 +46,10 @@ public class SpindexerIOSim implements SpindexerIO {
             .apply(
                 new ClosedLoopConfig()
                     .pid(
-                        Constants.SpindexerConstants.kP,
-                        Constants.SpindexerConstants.kI,
-                        Constants.SpindexerConstants.kD)
-                    .apply(new FeedForwardConfig().kV(Constants.SpindexerConstants.kV))),
+                        Constants.SpindexerConstants.kPSim,
+                        Constants.SpindexerConstants.kISim,
+                        Constants.SpindexerConstants.kDSim)
+                    .apply(new FeedForwardConfig().kV(Constants.SpindexerConstants.kVSim))),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kPersistParameters);
 
@@ -80,6 +80,6 @@ public class SpindexerIOSim implements SpindexerIO {
     inputs.omega = RPM.of(motor.getEncoder().getVelocity());
     inputs.omegaSetpoint = omegaSetpoint;
     inputs.current = Amps.of(motor.getOutputCurrent());
-    inputs.voltage = Volts.of(motor.getBusVoltage());
+    inputs.voltage = Volts.of(motor.getBusVoltage() * motor.getAppliedOutput());
   }
 }

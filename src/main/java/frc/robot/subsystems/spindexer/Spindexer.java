@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
-public class SpindexerSubsystem extends SubsystemBase {
+public class Spindexer extends SubsystemBase {
   private final SpindexerIO io;
   private final SpindexerIOInputsAutoLogged inputs = new SpindexerIOInputsAutoLogged();
 
-  public SpindexerSubsystem(SpindexerIO io) {
+  public Spindexer(SpindexerIO io) {
     this.io = io;
   }
 

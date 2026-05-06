@@ -36,10 +36,10 @@ public class SpindexerIOReal implements SpindexerIO {
             .apply(
                 new ClosedLoopConfig()
                     .pid(
-                        Constants.SpindexerConstants.kP,
-                        Constants.SpindexerConstants.kI,
-                        Constants.SpindexerConstants.kD)
-                    .apply(new FeedForwardConfig().kV(Constants.SpindexerConstants.kV))),
+                        Constants.SpindexerConstants.kPReal,
+                        Constants.SpindexerConstants.kIReal,
+                        Constants.SpindexerConstants.kDReal)
+                    .apply(new FeedForwardConfig().kV(Constants.SpindexerConstants.kVReal))),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kPersistParameters);
   }
@@ -54,7 +54,7 @@ public class SpindexerIOReal implements SpindexerIO {
   public void updateInputs(SpindexerIOInputs inputs) {
     inputs.omega = RPM.of(motor.getEncoder().getVelocity());
     inputs.omegaSetpoint = omegaSetpoint;
-    inputs.voltage = Volts.of(motor.getBusVoltage());
+    inputs.voltage = Volts.of(motor.getBusVoltage() * motor.getAppliedOutput());
     inputs.current = Amps.of(motor.getOutputCurrent());
   }
 }

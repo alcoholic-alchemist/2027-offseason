@@ -24,10 +24,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
-import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -39,7 +39,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final SpindexerSubsystem spindexer;
+  private final Spindexer spindexer;
 
   // DS Input Controllers
   private final CommandXboxController driver =
@@ -62,7 +62,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        spindexer = new SpindexerSubsystem(new SpindexerIOReal());
+        spindexer = new Spindexer(new SpindexerIOReal());
         break;
 
       case SIM:
@@ -74,7 +74,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        spindexer = new SpindexerSubsystem(new SpindexerIOSim());
+        spindexer = new Spindexer(new SpindexerIOSim());
         break;
 
       default:
@@ -86,7 +86,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        spindexer = new SpindexerSubsystem(new SpindexerIO() {});
+        spindexer = new Spindexer(new SpindexerIO() {});
         break;
     }
 
