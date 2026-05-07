@@ -49,7 +49,8 @@ public class SpindexerIOSim implements SpindexerIO {
                         Constants.SpindexerConstants.kPSim,
                         Constants.SpindexerConstants.kISim,
                         Constants.SpindexerConstants.kDSim)
-                    .apply(new FeedForwardConfig().kV(Constants.SpindexerConstants.kVSim))),
+                    .apply(new FeedForwardConfig().kV(Constants.SpindexerConstants.kVSim)))
+            .smartCurrentLimit(60),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kPersistParameters);
 
@@ -77,7 +78,7 @@ public class SpindexerIOSim implements SpindexerIO {
     motorSim.iterate(spindexerFlywheel.getAngularVelocityRPM(), RoboRioSim.getVInVoltage(), 0.02);
     BatterySim.calculateDefaultBatteryLoadedVoltage(spindexerFlywheel.getCurrentDrawAmps());
 
-    inputs.omega = RPM.of(motor.getEncoder().getVelocity());
+    inputs.omega = spindexerFlywheel.getAngularVelocity();
     inputs.omegaSetpoint = omegaSetpoint;
     inputs.current = Amps.of(motor.getOutputCurrent());
     inputs.voltage = Volts.of(motor.getBusVoltage() * motor.getAppliedOutput());

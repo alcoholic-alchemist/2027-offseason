@@ -48,7 +48,7 @@ public final class Constants {
     public static final double kPReal = 0.002, kIReal = 0.0, kDReal = 0.1, kVReal = 0.009;
 
     // Simulation Specific Constants
-    public static final double kPSim = 0.002, kISim = 0.0, kDSim = 0.1, kVSim = 0.009;
+    public static final double kPSim = 0.000, kISim = 0.0, kDSim = 0.0, kVSim = 1000;
 
     /** Roughly taken using onshape's "mass tool" */
     public static final double spindexerMOI = 0.009602574;
