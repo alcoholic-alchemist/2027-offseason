@@ -17,10 +17,10 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Constants;
+import frc.robot.util.sim.SimPowerUtil;
 
 /** Simulation implementation of {@link}SpindexerIO */
 public class SpindexerIOSim implements SpindexerIO {
@@ -73,14 +73,15 @@ public class SpindexerIOSim implements SpindexerIO {
 
   @Override
   public void updateInputs(SpindexerIOInputs inputs) {
-    spindexerFlywheel.setInput(motor.getAppliedOutput() * RoboRioSim.getVInVoltage());
+    spindexerFlywheel.setInputVoltage(motor.getAppliedOutput() * RoboRioSim.getVInVoltage());
     spindexerFlywheel.update(0.02);
     motorSim.iterate(spindexerFlywheel.getAngularVelocityRPM(), RoboRioSim.getVInVoltage(), 0.02);
-    BatterySim.calculateDefaultBatteryLoadedVoltage(spindexerFlywheel.getCurrentDrawAmps());
 
     inputs.omega = spindexerFlywheel.getAngularVelocity();
     inputs.omegaSetpoint = omegaSetpoint;
     inputs.current = Amps.of(motor.getOutputCurrent());
     inputs.voltage = Volts.of(motor.getBusVoltage() * motor.getAppliedOutput());
+
+    SimPowerUtil.addSubsystemCurrentToCurrentSum(inputs.current);
   }
 }

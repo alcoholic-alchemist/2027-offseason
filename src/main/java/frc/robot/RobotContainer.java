@@ -24,6 +24,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.kicker.Kicker;
+import frc.robot.subsystems.kicker.KickerIO;
+import frc.robot.subsystems.kicker.KickerIOReal;
+import frc.robot.subsystems.kicker.KickerIOSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
@@ -40,6 +44,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Spindexer spindexer;
+  private final Kicker kicker;
 
   // DS Input Controllers
   private final CommandXboxController driver =
@@ -63,6 +68,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
         spindexer = new Spindexer(new SpindexerIOReal());
+        kicker = new Kicker(new KickerIOReal());
         break;
 
       case SIM:
@@ -75,6 +81,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
         spindexer = new Spindexer(new SpindexerIOSim());
+        kicker = new Kicker(new KickerIOSim());
         break;
 
       default:
@@ -87,6 +94,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         spindexer = new Spindexer(new SpindexerIO() {});
+        kicker = new Kicker(new KickerIO() {});
         break;
     }
 
@@ -150,6 +158,11 @@ public class RobotContainer {
         .a()
         .whileTrue(Commands.run(spindexer::runForwards, spindexer))
         .whileFalse(Commands.run(spindexer::stop, spindexer));
+
+    operator
+        .b()
+        .whileTrue(Commands.run(kicker::runForwards, kicker))
+        .whileFalse(Commands.run(kicker::stop, kicker));
   }
 
   /**
