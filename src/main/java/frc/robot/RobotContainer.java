@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
@@ -24,6 +25,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOReal;
+import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.kicker.Kicker;
 import frc.robot.subsystems.kicker.KickerIO;
 import frc.robot.subsystems.kicker.KickerIOReal;
@@ -45,6 +50,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Spindexer spindexer;
   private final Kicker kicker;
+  private final Intake intake;
 
   // DS Input Controllers
   private final CommandXboxController driver =
@@ -69,6 +75,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackRight));
         spindexer = new Spindexer(new SpindexerIOReal());
         kicker = new Kicker(new KickerIOReal());
+        intake = new Intake(new IntakeIOReal());
         break;
 
       case SIM:
@@ -82,6 +89,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
         spindexer = new Spindexer(new SpindexerIOSim());
         kicker = new Kicker(new KickerIOSim());
+        intake = new Intake(new IntakeIOSim());
         break;
 
       default:
@@ -95,6 +103,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         spindexer = new Spindexer(new SpindexerIO() {});
         kicker = new Kicker(new KickerIO() {});
+        intake = new Intake(new IntakeIO() {});
         break;
     }
 
@@ -128,22 +137,22 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Default command, normal field-relative drive
+    // Default command, normal field-relative drive - DRIVER
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive, () -> -driver.getLeftY(), () -> -driver.getLeftX(), () -> -driver.getRightX()));
 
-    // Lock to 0° when A button is held
+    // Lock to 0° when A button is held - DRIVER
     driver
         .a()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive, () -> -driver.getLeftY(), () -> -driver.getLeftX(), () -> Rotation2d.kZero));
 
-    // Switch to X pattern when X button is pressed
+    // Switch to X pattern when X button is pressed - DRIVER
     driver.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Reset gyro to 0° when B button is pressed
+    // Reset gyro to 0° when B button is pressed - DRIVER
     driver
         .b()
         .onTrue(
@@ -154,6 +163,26 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    // Raise the Intake while Right Bumper is held - DRIVER
+    driver
+        .rightBumper()
+        .whileTrue(Commands.run(intake::raiseIntake, intake))
+        .whileFalse(Commands.run(intake::lowerIntake, intake));
+
+    // Spin Intake spinners Forwards while Left Trigger is held - DRIVER
+    driver
+        .leftTrigger()
+        .onTrue(new InstantCommand(() -> intake.spinIntakeForwards()))
+        .onFalse(new InstantCommand(() -> intake.stopIntakeSpinners()));
+
+    // Spin Intake spinners Backwards while Left Bumper is held - DRIVER
+    driver
+        .leftBumper()
+        .onTrue(new InstantCommand(() -> intake.spinIntakeReverse()))
+        .onFalse(new InstantCommand(() -> intake.stopIntakeSpinners()));
+
+    // Temporary powers given to operator while this code isnt finished, obviosuly would just all be
+    // covered under driver shoot command.
     operator
         .a()
         .whileTrue(Commands.run(spindexer::runForwards, spindexer))

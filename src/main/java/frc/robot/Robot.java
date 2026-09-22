@@ -150,6 +150,8 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
+    Logger.recordOutput(
+        "SimPowerUtil BatteryLoadedVoltage", SimPowerUtil.getBatteryLoadedVoltage());
     RoboRioSim.setVInVoltage(SimPowerUtil.getBatteryLoadedVoltage().in(Volts));
     SimPowerUtil.resetSubsystemCurrentSum();
   }

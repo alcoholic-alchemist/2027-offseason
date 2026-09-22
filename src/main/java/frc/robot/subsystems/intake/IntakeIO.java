@@ -34,4 +34,6 @@ public interface IntakeIO {
   public default void setSpinSpeed(AngularVelocity omega) {}
 
   public default void setPivotAngle(Angle theta) {}
+
+  public default void overrideIntakeEncoderPosition(Angle theta) {}
 }
